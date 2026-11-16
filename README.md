@@ -58,3 +58,7 @@ npm run deploy   # publish to Cloudflare
 
 A static site (plain JavaScript modules, no framework, no server) · Three.js for 3D · KaTeX for
 maths · hosted as static assets on Cloudflare Workers, deployed with the `cf` CLI + Vite.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
