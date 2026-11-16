@@ -1,0 +1,371 @@
+/* style.css: the look of String Lab.
+ *
+ * Palette "Graphite" (design tokens): neutral greys, white for anything selected.
+ * The 3D shapes and the charts keep their colours, because there colour carries
+ * meaning; everywhere else it is grey, so the science is the colourful part.
+ * Change a token here and the whole app follows (charts and the 3D scene read these too).
+ */
+:root {
+  /* Surfaces, darkest to lightest. Each step up means "closer to you". */
+  --bg: #0a0a0a;                       /* page */
+  --surface-sunken: #0d0d0d;           /* wells: text inputs, formula boxes */
+  --surface-1: #121212;                /* panels */
+  --surface-2: #1a1a1a;                /* things on panels: buttons, tiles */
+  --surface-3: #242424;                /* hover */
+  --overlay: rgba(14, 14, 14, 0.84);   /* glass laid over the 3D view */
+  --panel: rgba(18, 18, 18, 0.92);     /* panels, slightly see-through */
+  --bg-2: var(--surface-2);            /* older name, kept so nothing breaks */
+  --panel-solid: var(--surface-1);
+
+  /* Lines. Decorative hairlines can be faint; outlines of things you type into
+     or drag must reach 3:1 contrast (WCAG 1.4.11). */
+  --line: #222222;        /* hairlines between areas */
+  --line-strong: #303030; /* outlines of buttons */
+  --line-input: #666666;  /* outlines of inputs, slider tracks, switches: 3.3:1 */
+
+  /* Text: four levels, each passes WCAG AA (4.5:1) on panels. */
+  --text: #ededed;        /* headings and values: 16:1 */
+  --text-2: #c2c2c2;      /* body copy: 10.5:1 */
+  --muted: #9a9a9a;       /* labels: 6.7:1 */
+  --faint: #828282;       /* hints: 4.9:1 */
+
+  /* The accent is white. It means "interactive or selected", nothing else. */
+  --accent: #f0f0f0;
+  --accent-hover: #ffffff;
+  --accent-ink: #0a0a0a;                     /* text on white: 17:1 */
+  --accent-wash: rgba(255, 255, 255, 0.04);  /* tinted backgrounds */
+  --accent-fill: rgba(255, 255, 255, 0.1);   /* selected fill */
+  --accent-soft: rgba(255, 255, 255, 0.12);  /* soft glows */
+  --accent-line: rgba(255, 255, 255, 0.24);  /* quiet borders */
+  --accent-edge: rgba(255, 255, 255, 0.55);  /* hover and selected borders */
+
+  /* Supporting greys (slider fills, small labels). */
+  --accent-2: #6e6e6e;
+  --accent-3: #b4b4b4;
+  --violet-text: #c2c2c2;  /* "metaphor" badge; told apart by a dashed outline */
+  --violet-wash: transparent;
+  --violet-line: #8a8a8a;
+
+  /* Data colours: charts keep colour, like the 3D shapes. */
+  --chart-1: #38d6ff;     /* cyan */
+  --chart-2: #4b8dff;     /* blue */
+  --chart-3: #9a7bff;     /* violet */
+
+  /* Status: the only colour in the interface, so it can't be missed. */
+  --ok: #34d399;
+  --warn: #ffb547;
+  --bad: #ff5c7a;
+
+  /* The 3D scene reads these when it starts. */
+  --space: #0a0a0a;       /* empty space */
+  --nebula-1: #2c2c2c;    /* two soft clouds painted behind everything */
+  --nebula-2: #1f1f1f;
+  --grid-major: #5c5c5c;  /* floor grid */
+  --grid-minor: #2a2a2a;
+  --rim: #bdbdbd;         /* back light that outlines shapes */
+  --star-a: 0.6;          /* star tints, as hues from 0 to 1 */
+  --star-b: 0.6;
+
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  --glow: 0 0 0 1px var(--accent-edge);
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --radius: 12px;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background:
+    radial-gradient(900px 500px at 0% -10%, var(--accent-wash), transparent 60%),
+    radial-gradient(800px 500px at 100% 0%, var(--violet-wash), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font: 14.5px/1.55 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { margin: 0; line-height: 1.25; font-family: var(--font-display); font-weight: 650; letter-spacing: -0.01em; }
+h2 { font-size: 16px; margin-bottom: 8px; }
+h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: 16px 0 6px; font-weight: 600; }
+p { margin: 0 0 10px; }
+::selection { background: var(--accent-line); }
+
+/* ── Header ── */
+.top {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 18px; border-bottom: 1px solid var(--line);
+  background: var(--overlay);
+  backdrop-filter: blur(12px);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand h1 { font-size: 16px; font-weight: 700; }
+.brand p { margin: 0; color: var(--muted); font-size: 12px; }
+.logo {
+  width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; color: var(--accent);
+  background: linear-gradient(160deg, var(--surface-3), var(--surface-sunken));
+  border: 1px solid var(--accent-edge);
+  box-shadow: 0 0 16px var(--accent-soft), inset 0 0 10px var(--accent-fill);
+}
+/* The four stops of the tour, as one numbered step bar (same family as the Simple/Advanced switch). */
+#tabs {
+  display: grid; grid-template-columns: repeat(4, auto); gap: 2px; padding: 3px;
+  border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface-sunken);
+}
+#tabs button {
+  display: flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 5px 14px 5px 5px;
+  background: transparent; color: var(--muted); font-weight: 500; white-space: nowrap;
+}
+#tabs button:hover { background: var(--surface-2); color: var(--text); }
+.step-num {
+  width: 22px; height: 22px; flex: none; display: grid; place-items: center; border-radius: 50%;
+  border: 1px solid var(--line-input); font: 600 11.5px/1 var(--font-mono); color: var(--muted);
+  transition: background .15s, color .15s, border-color .15s;
+}
+#tabs button.done { color: var(--text-2); }
+#tabs button.done .step-num { border-color: var(--accent-edge); color: var(--text); }
+#tabs button[aria-selected="true"] { background: var(--accent-fill); color: var(--text); box-shadow: inset 0 0 0 1px var(--accent-edge); }
+#tabs button[aria-selected="true"] .step-num { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr) 320px;
+  grid-template-areas: "left stage right";
+  gap: 14px; padding: 14px; align-items: start;
+}
+.stage { grid-area: stage; display: flex; flex-direction: column; min-width: 0; }
+.panel.left { grid-area: left; }
+#viewport {
+  height: min(68vh, 720px); min-height: 380px; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--line); background: var(--bg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), inset 0 0 0 1px var(--accent-wash);
+}
+#viewport canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.hint { margin: 6px 0 14px; text-align: center; color: var(--faint); font-size: 12px; }
+
+.panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel > section {
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px;
+  backdrop-filter: blur(10px);
+}
+.intro { color: var(--muted); font-size: 14px; }
+
+@media (max-width: 1180px) {
+  .layout { grid-template-columns: 330px minmax(0, 1fr); grid-template-areas: "stage stage" "left right"; }
+  #viewport { height: 58vh; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "left"; padding: 12px; }
+  .top { padding: 10px 14px; position: static; }
+  #viewport { height: 52vh; min-height: 300px; }
+  /* On phones, put the tour right under the 3D view. */
+  .stage { display: contents; }
+  #viewport, .hint { order: 0; }
+  .panel.left { order: 1; }
+  .layout { display: flex; flex-direction: column; }
+}
+
+/* ── Buttons and inputs ── */
+button, input, select, textarea { font: inherit; color: inherit; }
+button {
+  background: var(--bg-2); border: 1px solid var(--line-strong); border-radius: 8px; padding: 6px 12px; cursor: pointer;
+  color: var(--text); transition: border-color .15s, background .15s, box-shadow .15s, color .15s;
+}
+button:hover { border-color: var(--accent-edge); background: var(--surface-3); }
+button:active { transform: translateY(1px); }
+button:disabled { opacity: .4; cursor: not-allowed; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 650; }
+button.primary:hover { background: var(--accent-hover); box-shadow: 0 0 18px var(--accent-line); }
+button.ghost { background: transparent; }
+button.small { font-size: 12px; padding: 4px 9px; }
+button.danger:hover { border-color: var(--bad); color: var(--bad); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="text"], input[type="password"], select, textarea {
+  width: 100%; background: var(--surface-sunken); border: 1px solid var(--line-input); border-radius: 8px; padding: 7px 9px;
+}
+input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: var(--glow); }
+.row-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+.row-buttons input[type="text"] { flex: 1; width: auto; min-width: 0; }
+
+/* Sliders: a thin track, filled in cyan up to the thumb (the fill amount is set from JS as --fill). */
+input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 22px; background: transparent; cursor: pointer;
+  --fill: 50%;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px; border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent)) 0 / var(--fill) 100% no-repeat, var(--line-input);
+}
+input[type="range"]::-moz-range-track { height: 4px; border-radius: 4px; background: var(--line-input); }
+input[type="range"]::-moz-range-progress { height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--accent-2), var(--accent)); }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 50%;
+  background: var(--text); border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-edge);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%; background: var(--text); border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-edge);
+}
+input[type="range"]:focus-visible { outline: none; }
+input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--accent-line); }
+input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--accent-line); }
+
+/* ── Guided tour (Simple mode) ── */
+.tour { border-color: var(--accent-line) !important; }
+.tour h2 { font-size: 21px; margin: 2px 0 10px; }
+.tour p { font-size: 14.5px; }
+.tour-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.tour-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.tour-chapter { color: var(--accent-3); font-size: 12.5px; font-weight: 600; margin-bottom: 2px; }
+.tour-try {
+  border-left: 2px solid var(--accent); padding: 8px 10px; border-radius: 0 8px 8px 0;
+  background: var(--accent-wash); font-size: 14px;
+}
+.tour-progress { display: flex; gap: 5px; margin: 12px 0 10px; }
+.tour-progress span { flex: 1; height: 3px; border-radius: 3px; background: var(--line-strong); }
+.tour-progress span.done { background: var(--accent-edge); }
+.tour-progress span.on { background: var(--accent); box-shadow: 0 0 8px var(--accent-edge); }
+.tour-nav { justify-content: space-between; }
+.tour-nav .primary { margin-left: auto; }
+.tour.takeaway {
+  background: linear-gradient(160deg, var(--accent-fill), var(--violet-wash)), var(--panel) !important;
+}
+.tour.takeaway h2::before { content: "★ "; color: var(--accent); }
+.tour.closed .primary { width: 100%; margin-top: 4px; }
+
+/* ── Formulas ── */
+.formula {
+  margin: 10px 0; padding: 10px 12px; border-radius: 10px; overflow-x: auto; overflow-y: hidden;
+  background: var(--surface-sunken); border: 1px solid var(--line);
+}
+.formula .katex-display { margin: 0; }
+.formula .katex { font-size: 1.06em; color: var(--text); }
+.formula code { font-size: 12px; white-space: pre-wrap; font-family: var(--font-mono); }
+#math-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 12px; }
+.math-item { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--surface-2); min-width: 0; }
+.math-item h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; color: var(--text); text-transform: none; letter-spacing: 0; font-size: 14px; }
+.math-num {
+  display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; font-size: 11px; flex: none;
+  font-family: var(--font-mono); color: var(--accent); border: 1px solid var(--accent-edge); background: var(--accent-fill);
+}
+.math-item p { margin: 0; color: var(--muted); font-size: 13px; }
+
+/* ── Readouts ── */
+.readout { display: grid; grid-template-columns: auto 1fr; gap: 5px 12px; margin: 0; font-size: 12.5px; }
+.readout dt { color: var(--muted); white-space: pre; }
+.readout dd { margin: 0; text-align: right; font-family: var(--font-mono); font-size: 12px; color: var(--text); }
+.readout dd.ok { color: var(--ok); }
+.readout dd.bad { color: var(--bad); }
+.readout dd.hot { color: var(--warn); font-weight: 600; }
+.note { margin: 10px 0 0; font-size: 12.5px; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; background: var(--swatch); vertical-align: -1px; }
+.chart { display: block; width: 100%; }
+
+/* ── Saved setups ── */
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.muted { color: var(--muted); font-size: 12.5px; margin: 0; }
+.error { color: var(--bad); font-size: 12.5px; margin: 0; }
+.success { color: var(--ok); font-size: 12.5px; margin: 0; }
+.save-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.save-list li { display: flex; gap: 6px; align-items: center; }
+.save-list li button:first-child { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.section-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.section-head h2 { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition: none !important; }
+}
+
+/* ══ Simple mode (the default) ═══════════════════════════════════════════════
+   Only the picture, the story, and a few plain controls. Everything marked
+   .adv (numbers, formulas, lab panels) appears in Advanced mode. */
+.simple .adv { display: none !important; }
+html:not(.simple) .simple-only { display: none !important; }
+.simple .layout { grid-template-columns: minmax(0, 1fr) 390px; grid-template-areas: "stage left"; }
+.simple #viewport { height: min(76vh, 820px); }
+.simple .tour p { font-size: 15.5px; line-height: 1.6; }
+.simple .tour h2 { font-size: 23px; }
+
+/* Simple / Advanced switch in the header */
+.mode-switch { display: inline-flex; padding: 3px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface-sunken); }
+.mode-switch button { border: 0; border-radius: 999px; padding: 5px 14px; background: transparent; color: var(--muted); font-weight: 500; }
+.mode-switch button[aria-pressed="true"] { background: var(--accent-fill); color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-edge); }
+
+.viewport-wrap { position: relative; }
+
+/* On/off switch */
+.switch { display: flex; align-items: center; gap: 10px; margin-top: 16px; cursor: pointer; font-size: 14px; font-weight: 500; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch-track { position: relative; width: 36px; height: 20px; border-radius: 999px; background: var(--line-input); transition: background .15s, box-shadow .15s; flex: none; }
+.switch-track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--text-2); transition: transform .15s, background .15s; }
+.switch input:checked + .switch-track { background: var(--accent-line); box-shadow: inset 0 0 0 1px var(--accent), 0 0 10px var(--accent-line); }
+.switch input:checked + .switch-track::after { transform: translateX(16px); background: var(--accent); }
+.switch input:focus-visible + .switch-track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 980px) {
+  .simple .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "left"; }
+  .simple #viewport { height: 58vh; }
+}
+@media (max-width: 760px) {
+  .top { justify-content: center; }
+  /* Simple mode on a phone: name and mode switch on one row, the step bar full width below. */
+  .simple .top { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+  .simple .brand p { display: none; }
+  .simple .mode-switch { justify-self: end; }
+  .simple #tabs { grid-column: 1 / -1; grid-row: 2; grid-template-columns: repeat(4, minmax(0, 1fr)); border-radius: 14px; }
+  .simple #tabs button { flex-direction: column; justify-content: center; gap: 4px; min-height: 54px; padding: 6px 2px; border-radius: 11px; font-size: 12.5px; }
+  .step-the { display: none; }
+  .step-word { display: inline-block; }
+  .step-word::first-letter { text-transform: uppercase; } /* "The problem" becomes "Problem" */
+}
+
+/* ── Welcome screen (before the tour) ─────────────────────────────────────
+   Covers the page, but fades from clear to dark so the live 3D string shows above
+   the card. On a phone the card sits at the bottom like a sheet; on desktop it floats. */
+.welcome {
+  /* Desktop: the card sits on the right (over the tour panel), the string stays visible on the left. */
+  position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: flex-end; padding: 24px 4vw;
+  background: linear-gradient(90deg, rgba(10, 10, 10, 0.1) 0%, rgba(10, 10, 10, 0.3) 45%, rgba(10, 10, 10, 0.92) 68%);
+  animation: welcome-in .35s ease-out;
+}
+.welcome[hidden] { display: none; }
+.welcome-card {
+  width: min(480px, 100%); display: flex; flex-direction: column; gap: 14px; padding: 28px;
+  background: var(--panel); border: 1px solid var(--line-strong); border-radius: 20px; box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+.welcome-eyebrow { margin: 0; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.welcome-card h2 { margin: 0; font-size: 26px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; }
+.welcome-lead { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--text-2); }
+.welcome-stops { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.welcome-stops li {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--surface-sunken); font-weight: 500; font-size: 14.5px;
+}
+.welcome-stops span {
+  width: 22px; height: 22px; flex: none; display: grid; place-items: center; border-radius: 50%;
+  border: 1px solid var(--line-input); font: 600 11.5px/1 var(--font-mono); color: var(--text-2);
+}
+.welcome-note { margin: 0; font-size: 13px; color: var(--muted); }
+.welcome-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.welcome-actions button { min-height: 50px; border-radius: 12px; font-size: 15.5px; }
+.welcome-actions .primary { font-size: 16px; }
+.brand.reopen { cursor: pointer; border-radius: 12px; }
+@keyframes welcome-in { from { opacity: 0; } to { opacity: 1; } }
+/* Single-column layouts (phones and small tablets): the card rises from the bottom like a sheet. */
+@media (max-width: 980px) {
+  .welcome { align-items: flex-end; justify-content: center; padding: 0; background: linear-gradient(180deg, rgba(10, 10, 10, 0.2) 0%, rgba(10, 10, 10, 0.78) 60%, rgba(10, 10, 10, 0.92) 100%); }
+  .welcome-card { width: min(560px, 100%); border-radius: 20px 20px 0 0; border-bottom: 0; padding: 20px 18px calc(16px + env(safe-area-inset-bottom)); gap: 11px; }
+  .welcome-eyebrow { display: none; } /* the header already says String Lab */
+  .welcome-card h2 { font-size: 22px; }
+  .welcome-lead { font-size: 14.5px; line-height: 1.5; }
+  .welcome-stops li { padding: 7px 10px; font-size: 14px; }
+  .welcome-actions button { min-height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) { .welcome { animation: none; } }
