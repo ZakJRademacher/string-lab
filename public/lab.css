@@ -1,0 +1,279 @@
+/* lab.css: Advanced mode, the laboratory layout.
+   sidebar (modules + presets + account) | 3D stage + play bar + dock | inspector */
+
+html:not(.simple) .layout {
+  grid-template-columns: 250px minmax(0, 1fr) 310px;
+  grid-template-areas: "sidebar stage inspector";
+  gap: 12px; padding: 12px;
+}
+html:not(.simple) body.no-inspector .layout { grid-template-columns: 250px minmax(0, 1fr); grid-template-areas: "sidebar stage"; }
+body.no-inspector .inspector { display: none !important; }
+html:not(.simple) #viewport { height: min(62vh, 680px); }
+.eyebrow { font-family: var(--font); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+.eyebrow.inline { display: inline; margin-right: 6px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.sidebar, .inspector {
+  min-width: 0; display: flex; flex-direction: column; gap: 10px;
+  max-height: calc(100vh - 86px); overflow-y: auto; position: sticky; top: 74px;
+  scrollbar-width: thin;
+}
+.sidebar { grid-area: sidebar; }
+.inspector { grid-area: inspector; }
+.sidebar > section, #inspector-head, .inspector > section {
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px;
+}
+.sidebar > section[hidden] { display: none; }
+#inspector-body { display: flex; flex-direction: column; }
+#inspector-body .insp-section { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
+#inspector-body .insp-section:last-child { margin-bottom: 0; }
+#inspector-head h2 { font-size: 18px; margin: 2px 0 8px; }
+#inspector-head .eyebrow { color: var(--accent); margin-bottom: 4px; }
+
+/* Module list */
+#lab-nav { display: flex; flex-direction: column; gap: 4px; }
+.nav-item { display: flex; gap: 10px; align-items: flex-start; text-align: left; border: 1px solid transparent; background: transparent; padding: 8px; border-radius: 10px; }
+.nav-item:hover { background: var(--bg-2); border-color: var(--line); }
+.nav-item.on { background: var(--accent-fill); border-color: var(--accent-edge); box-shadow: inset 2px 0 0 var(--accent); }
+.nav-icon { width: 22px; height: 22px; flex: none; color: var(--muted); margin-top: 1px; transition: color .15s; }
+.nav-item:hover .nav-icon { color: var(--text-2); }
+.nav-item.on .nav-icon, #module-picker .nav-icon { color: var(--accent); filter: drop-shadow(0 0 4px var(--accent-line)); }
+.nav-icon svg { width: 100%; height: 100%; display: block; }
+.nav-text { display: flex; flex-direction: column; line-height: 1.25; }
+.nav-text strong { font-size: 13.5px; font-weight: 600; }
+.nav-text small { color: var(--muted); font-size: 11.5px; }
+
+/* Presets */
+#presets { display: flex; flex-direction: column; gap: 6px; }
+.preset { display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 7px 9px; border-radius: 9px; line-height: 1.25; }
+.preset strong { font-size: 13px; font-weight: 600; }
+.preset small { color: var(--muted); font-size: 11.5px; }
+.reset-all { align-self: flex-start; margin-top: 2px; }
+
+/* Info card and toolbar over the 3D view */
+.infocard {
+  position: absolute; top: 12px; left: 12px; max-width: min(560px, calc(100% - 300px)); padding: 10px 12px;
+  background: var(--overlay); border: 1px solid var(--line-strong); border-radius: 12px; backdrop-filter: blur(8px);
+  color: var(--text); font-size: 12.5px; line-height: 1.5;
+}
+.infocard p { margin: 4px 0 0; color: var(--text-2); }
+.infocard .eyebrow { color: var(--muted); font-size: 10px; }
+.infocard-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.infocard-head strong { font-family: var(--font-display); font-size: 15px; }
+.badge { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; border: 1px solid; cursor: help; }
+.badge.result { color: var(--accent); border-color: var(--accent-edge); background: var(--accent-fill); }
+.badge.analogy { color: var(--text-2); border-color: var(--line-input); background: rgba(255, 255, 255, 0.04); }
+.badge.metaphor { color: var(--violet-text); border-color: var(--violet-line); background: var(--violet-wash); }
+.badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.toolbar { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; }
+.tool, .icon-btn {
+  width: 34px; height: 34px; padding: 6px; display: grid; place-items: center; border-radius: 9px;
+  background: var(--overlay); border: 1px solid var(--line-strong); color: var(--text-2);
+}
+.tool svg, .icon-btn svg { width: 18px; height: 18px; display: block; }
+.tool[aria-pressed="true"] { color: var(--accent); border-color: var(--accent-edge); background: var(--accent-fill); }
+.tool:hover { color: var(--text); }
+.vp-hint { position: absolute; right: 12px; bottom: 8px; margin: 0; font-size: 11px; color: var(--faint); pointer-events: none; }
+
+/* Play bar */
+.transport {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; padding: 8px 12px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.transport .icon-btn { background: var(--bg-2); border-color: var(--line-strong); color: var(--accent); }
+.transport-speed { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px; max-width: 360px; }
+.transport-speed input { flex: 1; }
+.kbd-hint { margin-left: auto; font-size: 11.5px; }
+
+/* Dock */
+.dock { margin-top: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.dock-tabs { display: flex; gap: 2px; padding: 6px 6px 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.dock-tabs button { border: 0; border-radius: 8px 8px 0 0; background: transparent; color: var(--muted); padding: 8px 12px; font-size: 13px; font-weight: 500; white-space: nowrap; }
+.dock-tabs button[aria-selected="true"] { background: var(--bg-2); color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+.dock-panel { padding: 12px; max-height: 440px; overflow-y: auto; }
+.graph-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+.chart-box { margin: 0; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: color-mix(in srgb, var(--bg-2) 55%, transparent); min-width: 0; }
+.chart-box.wide { grid-column: 1 / -1; }
+.chart-box figcaption { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.chart-box canvas { display: block; width: 100%; }
+.chart-box .muted { margin-top: 6px; }
+.diag-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+
+/* Inspector controls */
+.insp-control { margin-top: 10px; }
+.insp-section > .insp-control:first-of-type { margin-top: 0; }
+.insp-control label { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; margin-bottom: 3px; color: var(--text); }
+.insp-control output { color: var(--accent); font-size: 12px; font-family: var(--font-mono); }
+.insp-label { display: block; font-size: 12.5px; margin-bottom: 4px; }
+.insp-note { color: var(--muted); font-size: 12px; margin: 8px 0 0; }
+.inspector .switch { font-size: 13px; margin-top: 10px; }
+.inspector .readout { margin-top: 10px; }
+.seg { display: flex; flex-wrap: wrap; gap: 4px; }
+.seg button { flex: 1 1 auto; padding: 6px 8px; font-size: 12.5px; border-radius: 8px; }
+.seg.compact { display: grid; grid-template-columns: repeat(5, 1fr); }
+.seg button.on { border-color: var(--accent); color: var(--accent); background: var(--accent-fill); box-shadow: var(--glow); }
+.planes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-top: 8px; }
+.plane { position: relative; padding: 5px 0; font-size: 11.5px; font-family: "JetBrains Mono", monospace; border-radius: 7px; }
+.plane.on { border-color: var(--accent); color: var(--accent); background: var(--accent-fill); box-shadow: var(--glow); }
+.plane.spinning::after { content: ""; position: absolute; top: 3px; right: 3px; width: 5px; height: 5px; border-radius: 50%; background: var(--ok); }
+.mixer { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 4px; }
+.mixer-bar { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0; border: 0; background: none; touch-action: none; cursor: ns-resize; }
+.mixer-track { position: relative; width: 14px; height: 78px; border-radius: 7px; background: var(--bg); border: 1px solid var(--line); overflow: hidden; }
+.mixer-fill { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(0deg, var(--accent-2), var(--accent-3)); }
+.mixer-bar.on .mixer-track { border-color: var(--accent); box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 40%, transparent); }
+.mixer-num { font-size: 11px; color: var(--muted); }
+.mixer-bar.on .mixer-num { color: var(--accent); font-weight: 700; }
+
+@media (max-width: 1180px) {
+  html:not(.simple) .layout { grid-template-columns: 230px minmax(0, 1fr); grid-template-areas: "sidebar stage" "sidebar inspector"; }
+  .inspector { position: static; max-height: none; }
+}
+@media (max-width: 860px) {
+  html:not(.simple) .layout { display: flex; flex-direction: column; align-items: stretch; }
+  html:not(.simple) .layout > * { width: 100%; min-width: 0; }
+  html:not(.simple) .stage { display: block; order: 0; }
+  .vp-hint { display: none; }
+  .inspector { order: 1; }
+  .sidebar { order: 2; position: static; max-height: none; }
+  .infocard { position: static; max-width: none; margin-top: 8px; }
+  .toolbar { top: 8px; right: 8px; }
+  .kbd-hint { display: none; }
+  html:not(.simple) #viewport { height: 52vh; }
+}
+
+/* Palette touches: clock and speed in cyan monospace, like an instrument readout. */
+#clock { color: var(--text); font-size: 13px; }
+#timescale-out { color: var(--accent); font-size: 13px; }
+.infocard { border-color: var(--line-strong); }
+.preset:hover { border-color: var(--accent-edge); background: var(--accent-wash); }
+.seg button { background: var(--bg-2); }
+
+/* ── Phone lab (Advanced mode, 760px wide or less) ─────────────────────────
+   app.js adds the class "phone-lab" to <html> and moves the inspector, presets,
+   saves and play bar into place. The 3D view fills the screen; a bottom sheet
+   holds every panel. Everything you can tap is at least 44px. */
+.phone-only, .phone-tab, .phone-label { display: none; }
+.chip-more { display: none; }
+/* On a big screen the info card head is a plain title, even though it is a button. */
+.infocard-head { width: 100%; border: 0; background: none; padding: 0; color: inherit; font: inherit; text-align: left; cursor: default; }
+
+html.phone-lab { --peek: 42dvh; --full: 86dvh; }
+html.phone-lab body { height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+html.phone-lab .phone-only { display: block; }
+html.phone-lab .dock-tabs .phone-tab { display: flex; }
+html.phone-lab .phone-label { display: inline; }
+html.phone-lab .desktop-label { display: none; }
+
+/* Header: logo, module picker, mode switch */
+html.phone-lab .top { flex-wrap: nowrap; justify-content: flex-start; gap: 8px; padding: 8px 10px; }
+html.phone-lab .brand { display: none; }
+html.phone-lab .infocard .badge { padding: 2px 6px; white-space: nowrap; }
+html.phone-lab .module-picker { position: relative; flex: 1; min-width: 0; }
+#module-picker {
+  width: 100%; min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 10px;
+  border: 1px solid var(--accent-edge); background: var(--accent-fill); color: var(--text); text-align: left;
+}
+.picker-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.picker-text small { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.picker-text strong { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.picker-chevron { margin-left: auto; width: 16px; height: 16px; color: var(--muted); flex: none; transition: transform .2s; }
+.picker-chevron svg { width: 100%; height: 100%; display: block; }
+#module-picker[aria-expanded="true"] .picker-chevron { transform: rotate(180deg); }
+#module-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; width: min(320px, calc(100vw - 20px)); z-index: 40;
+  display: flex; flex-direction: column; gap: 4px; padding: 6px;
+  background: var(--surface-1); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+#module-menu[hidden] { display: none; }
+#module-menu .nav-item { min-height: 52px; align-items: center; }
+html.phone-lab .mode-switch { flex: none; }
+html.phone-lab .mode-switch button { padding: 0 10px; min-height: 38px; font-size: 13px; }
+
+/* The 3D view fills what the sheet leaves free */
+html.phone-lab .layout { flex: 1; min-height: 0; display: block; padding: 0; position: relative; }
+html.phone-lab .sidebar { display: none !important; }
+html.phone-lab .stage { display: block; height: 100%; }
+html.phone-lab .viewport-wrap { position: relative; height: calc(100% - var(--peek) + 20px); }
+html.phone-lab #viewport { height: 100%; min-height: 0; border: 0; border-radius: 0; box-shadow: none; }
+
+/* Info card shrinks to a chip; tap it for the explanation */
+html.phone-lab .infocard {
+  position: absolute; top: 10px; left: 10px; margin: 0; max-width: calc(100% - 76px); padding: 0;
+  border-radius: 20px; font-size: 13px; z-index: 2;
+}
+html.phone-lab .infocard-head { min-height: 40px; padding: 4px 8px 4px 12px; cursor: pointer; flex-wrap: nowrap; }
+html.phone-lab .infocard-head strong { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+html.phone-lab .chip-more { display: block; width: 20px; height: 20px; flex: none; margin-left: auto; color: var(--muted); }
+html.phone-lab .chip-more svg { width: 100%; height: 100%; display: block; }
+html.phone-lab .infocard p { display: none; padding: 0 12px 10px; }
+html.phone-lab .infocard.open { border-radius: 14px; }
+html.phone-lab .infocard.open p { display: block; }
+html.phone-lab .infocard.open .chip-more { color: var(--accent); }
+
+/* Toolbar: a column of big buttons on the right; the inspector toggle has no job here */
+html.phone-lab .toolbar { top: 10px; right: 10px; flex-direction: column; }
+html.phone-lab .tool, html.phone-lab .icon-btn { width: 44px; height: 44px; padding: 0; flex: none; }
+html.phone-lab .tool svg, html.phone-lab .icon-btn svg { width: 20px; height: 20px; }
+html.phone-lab .toolbar .tool:last-child { display: none; }
+
+/* Play bar floats at the bottom of the 3D view */
+html.phone-lab .transport {
+  position: absolute; left: 10px; right: 10px; bottom: 30px; margin: 0; gap: 10px; flex-wrap: nowrap; padding: 6px 10px;
+  background: var(--overlay); backdrop-filter: blur(8px); border-color: var(--accent-line); border-radius: 14px;
+}
+html.phone-lab .transport-speed { min-width: 0; max-width: none; }
+html.phone-lab .transport-speed .muted { display: none; }
+html.phone-lab .kbd-hint { display: none; }
+
+/* The dock becomes a bottom sheet */
+html.phone-lab #dock {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; margin: 0; height: var(--peek);
+  display: flex; flex-direction: column;
+  border: 0; border-top: 1px solid var(--accent-line); border-radius: 20px 20px 0 0;
+  background: var(--surface-1); box-shadow: var(--shadow);
+  transition: height .28s cubic-bezier(.2, .8, .2, 1);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+html.phone-lab #dock[data-sheet="full"] { height: var(--full); }
+.sheet-handle { width: 100%; height: 28px; flex: none; border: 0; background: transparent; padding: 0; place-items: center; touch-action: none; cursor: grab; }
+html.phone-lab .sheet-handle { display: grid; }
+.sheet-handle span { display: block; width: 40px; height: 4px; border-radius: 4px; background: var(--line-input); }
+.sheet-handle:focus-visible span { background: var(--accent); }
+html.phone-lab .dock-tabs { flex: none; padding: 0 8px; gap: 0; scrollbar-width: none; }
+html.phone-lab .dock-tabs::-webkit-scrollbar { display: none; }
+html.phone-lab .dock-tabs button { display: flex; min-height: 44px; align-items: center; padding: 0 12px; font-size: 14px; border-radius: 0; background: transparent; }
+html.phone-lab .dock-tabs button[aria-selected="true"] { font-weight: 600; background: transparent; }
+html.phone-lab .dock-panel { flex: 1; min-height: 0; max-height: none; overflow-y: auto; overscroll-behavior: contain; padding: 12px 14px 20px; }
+html.phone-lab .dock-panel[hidden] { display: none; }
+
+/* Panels that moved into the sheet lose their column styling */
+html.phone-lab .dock-panel .inspector { position: static; max-height: none; overflow: visible; display: flex; gap: 10px; }
+html.phone-lab .dock-panel #presets-section,
+html.phone-lab .dock-panel #saves { background: none; border: 0; padding: 0; margin-bottom: 16px; }
+
+/* Bigger touch targets inside the sheet */
+html.phone-lab .seg button { min-height: 44px; font-size: 14px; }
+html.phone-lab .planes { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+html.phone-lab .plane { min-height: 48px; font-size: 14px; }
+html.phone-lab .preset { min-height: 48px; justify-content: center; padding: 8px 12px; }
+html.phone-lab .preset strong { font-size: 14px; }
+html.phone-lab .insp-control label { font-size: 14px; }
+html.phone-lab .switch { min-height: 44px; font-size: 14px; }
+html.phone-lab .switch-track { width: 44px; height: 26px; }
+html.phone-lab .switch-track::after { width: 20px; height: 20px; }
+html.phone-lab .switch input:checked + .switch-track::after { transform: translateX(18px); }
+html.phone-lab input[type="range"] { height: 36px; }
+html.phone-lab input[type="range"]::-webkit-slider-thumb { width: 22px; height: 22px; margin-top: -9px; }
+html.phone-lab input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; }
+html.phone-lab .dock-panel .small { min-height: 44px; }
+html.phone-lab #saves input { min-height: 48px; font-size: 16px; } /* 16px stops iPhones zooming in */
+
+@media (prefers-reduced-motion: reduce) {
+  html.phone-lab #dock { transition: none; }
+}
+
+/* Without colour, the honesty badges differ by shape:
+   result = solid white, analogy = grey outline, metaphor = dashed outline. */
+.badge.result { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.badge.metaphor { border-style: dashed; }

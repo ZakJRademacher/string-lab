@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>String Lab</title>
+  <meta name="description" content="An interactive laboratory of string theory: vibrating strings, 0D–9D shapes, Calabi–Yau geometry and compactification, computed from the real equations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <!-- KaTeX draws the maths formulas. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lab.css">
+  <!-- Pick Simple or Advanced before the page draws, so it never flashes the wrong layout. -->
+  <script>
+    try { if (localStorage.getItem('string-lab:mode') !== 'advanced') document.documentElement.classList.add('simple'); }
+    catch (e) { document.documentElement.classList.add('simple'); }
+  </script>
+  <!-- An "import map" tells the browser where to download the Three.js 3D library from. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="22" height="22"><path d="M3 16c4-9 8-9 13 0s9 9 13 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </span>
+      <div>
+        <h1>String Lab</h1>
+        <p class="simple-only">String theory, made simple</p>
+        <p class="adv">An interactive laboratory of higher dimensions</p>
+      </div>
+    </div>
+    <nav id="tabs" class="simple-only" role="tablist" aria-label="Stops on the tour"></nav>
+    <!-- Advanced on a phone: one module picker instead of the sidebar -->
+    <div class="module-picker phone-only">
+      <button id="module-picker" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="module-menu"></button>
+      <div id="module-menu" role="menu" aria-label="Modules" hidden></div>
+    </div>
+    <div id="mode" class="mode-switch" role="group" aria-label="How much detail">
+      <button type="button" data-mode="simple" aria-pressed="true">Simple</button>
+      <button type="button" data-mode="advanced" aria-pressed="false">Advanced</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Advanced: the laboratory sidebar -->
+    <aside class="sidebar adv" aria-label="Laboratory">
+      <section>
+        <h3 class="eyebrow">Laboratory</h3>
+        <nav id="lab-nav" aria-label="Modules"></nav>
+      </section>
+      <section id="presets-section">
+        <h3 class="eyebrow">Presets</h3>
+        <div id="presets"></div>
+      </section>
+      <section id="saves"></section>
+    </aside>
+
+    <section class="stage">
+      <div class="viewport-wrap">
+        <div id="viewport" role="img" aria-label="3D view. Drag to rotate, scroll to zoom."></div>
+        <div id="infocard" class="infocard adv" aria-live="polite"></div>
+        <div id="toolbar" class="toolbar adv" role="toolbar" aria-label="View tools"></div>
+        <p class="vp-hint adv">drag rotate · scroll zoom · right-drag pan · double-click focus</p>
+      </div>
+      <p class="hint simple-only">Drag to spin · scroll or pinch to zoom</p>
+
+      <!-- Advanced: play bar and dock -->
+      <div id="transport" class="transport adv">
+        <button id="play" type="button" class="icon-btn" aria-label="Pause"></button>
+        <button id="restart" type="button" class="icon-btn" aria-label="Restart time"></button>
+        <span id="clock" class="mono">t = 0.0 s</span>
+        <label class="transport-speed">
+          <span class="muted">Speed</span>
+          <input id="timescale" type="range" min="0" max="2" step="0.05" aria-label="Playback speed">
+          <output id="timescale-out" class="mono">1.00×</output>
+        </label>
+        <span class="muted kbd-hint">Space play · G grid · A axes · R rotate</span>
+      </div>
+      <!-- On a phone this dock becomes a bottom sheet holding every panel. -->
+      <section id="dock" class="dock adv" data-sheet="peek">
+        <button id="sheet-handle" type="button" class="sheet-handle phone-only" aria-label="Show more settings" aria-expanded="false"><span></span></button>
+        <div class="dock-tabs" role="tablist" aria-label="Panels">
+          <button type="button" role="tab" data-dock="controls" class="phone-tab" aria-selected="false">Controls</button>
+          <button type="button" role="tab" data-dock="math" aria-selected="true"><span class="desktop-label">Σ Mathematical inspector</span><span class="phone-label">Maths</span></button>
+          <button type="button" role="tab" data-dock="graphs" aria-selected="false">Graphs</button>
+          <button type="button" role="tab" data-dock="presets" class="phone-tab" aria-selected="false">Presets</button>
+          <button type="button" role="tab" data-dock="diag" aria-selected="false">Diagnostics</button>
+        </div>
+        <div class="dock-panel" data-panel="controls" hidden></div>
+        <div class="dock-panel" data-panel="presets" hidden></div>
+        <div class="dock-panel" data-panel="math"><div id="math-list"></div></div>
+        <div class="dock-panel" data-panel="graphs" hidden><div id="graphs"></div></div>
+        <div class="dock-panel" data-panel="diag" hidden><div id="diag"></div></div>
+      </section>
+    </section>
+
+    <!-- Simple: the story and a few plain controls -->
+    <aside class="panel left simple-only">
+      <section id="tour" aria-live="polite"></section>
+    </aside>
+
+    <!-- Advanced: the inspector -->
+    <aside id="inspector" class="inspector adv" aria-label="Inspector">
+      <div id="inspector-head"></div>
+      <div id="inspector-body"></div>
+      <section class="insp-section">
+        <h3 class="eyebrow">Readout</h3>
+        <div id="info" aria-live="polite"></div>
+      </section>
+    </aside>
+  </main>
+
+  <!-- The welcome screen: shown before the tour on a first visit (tap "String Lab" to see it again).
+       The live 3D string keeps moving behind it. -->
+  <div id="welcome" class="welcome" role="dialog" aria-modal="true" aria-labelledby="welcome-title" hidden>
+    <div class="welcome-card">
+      <p class="welcome-eyebrow">Welcome to String Lab</p>
+      <h2 id="welcome-title">What if everything is made of tiny vibrating strings?</h2>
+      <p class="welcome-lead">String theory is a bold idea about what everything is made of, from atoms to stars. This short tour tells its story in four stops:</p>
+      <ol class="welcome-stops" aria-label="The four stops">
+        <li><span aria-hidden="true">1</span>The problem</li>
+        <li><span aria-hidden="true">2</span>The idea</li>
+        <li><span aria-hidden="true">3</span>The cost</li>
+        <li><span aria-hidden="true">4</span>The catch</li>
+      </ol>
+      <p class="welcome-note">No maths needed: every picture comes from the real equations.</p>
+      <div class="welcome-actions">
+        <button type="button" class="primary" id="welcome-start">Start the tour <span aria-hidden="true">→</span></button>
+        <button type="button" id="welcome-lab">Explore the lab instead</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
