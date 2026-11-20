@@ -8,9 +8,9 @@
     "dev": "cf dev",
     "start": "cf dev",
     "build": "cf build",
-    "predeploy": "node --test test/",
+    "predeploy": "node --test \"test/*.test.js\"",
     "deploy": "cf deploy",
-    "test": "node --test test/"
+    "test": "node --test \"test/*.test.js\""
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^2.0.0-beta.v.17",
