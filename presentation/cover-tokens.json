@@ -1,0 +1,10 @@
+{
+  "colors": {
+    "canvas": "#0b1220",
+    "surface": "#141c2c",
+    "ink": "#f4f7fb",
+    "muted": "#a2b2cc",
+    "primary": "#8fc3f2",
+    "accent": "#f2a368"
+  }
+}
