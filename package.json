@@ -1,6 +1,6 @@
 {
   "name": "string-lab",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "An interactive, beginner-friendly string theory explorer with a guided tour and a full laboratory mode. A static site: everything runs in the browser.",
   "type": "module",
