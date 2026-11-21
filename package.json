@@ -1,6 +1,6 @@
 {
   "name": "string-lab",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "An interactive, beginner-friendly string theory explorer with a guided tour and a full laboratory mode. A static site: everything runs in the browser.",
   "type": "module",
@@ -15,8 +15,8 @@
   "devDependencies": {
     "@cloudflare/vite-plugin": "^2.0.0-beta.v.17",
     "cf": "^1.0.0-beta.32",
-    "katex": "^0.18.11",
-    "three": "^0.170.0",
+    "katex": "^0.19.1",
+    "three": "^0.187.0",
     "vite": "^8.3.8"
   }
 }
