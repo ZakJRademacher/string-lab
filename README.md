@@ -14,6 +14,8 @@ diagnostics. No accounts: saved setups stay in your own browser.
 
 **Live:** <https://string-lab.zakjrademacher.workers.dev>
 
+![String Lab's welcome screen over a vibrating closed string](docs/images/string-lab-1.0.0.png)
+
 ## Scope: who it's for and what it won't do
 
 **For:** curious people with no physics background. They should leave with a few
