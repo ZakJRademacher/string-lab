@@ -14,7 +14,7 @@ diagnostics. No accounts: saved setups stay in your own browser.
 
 **Live:** <https://string-lab.zakjrademacher.workers.dev>
 
-![String Lab's welcome screen over a vibrating closed string](docs/images/string-lab-1.0.0.png)
+![String Lab's welcome screen over a vibrating closed string](docs/images/string-lab-1.0.1.png)
 
 ## Scope: who it's for and what it won't do
 
@@ -50,7 +50,7 @@ experience. New ideas must support one of the four ideas above, or they don't go
 ```bash
 npm install
 npm run dev      # local preview, http://localhost:5173
-npm test         # 66 tests, offline
+npm test         # 71 tests, offline
 npm run deploy   # publish to Cloudflare
 ```
 

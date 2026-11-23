@@ -3,7 +3,7 @@
   "eyebrow": "STRING THEORY EXPLORER",
   "description": "A guided 3D introduction to string theory.",
   "format": "JavaScript · Three.js · Cloudflare",
-  "image": "docs/images/string-lab-1.0.0.png",
+  "image": "docs/images/string-lab-1.0.1.png",
   "tokens": "presentation/cover-tokens.json",
   "color_roles": {
     "canvas": "canvas",
@@ -14,7 +14,7 @@
     "accent": "accent"
   },
   "frame_label": "String Lab welcome screen",
-  "preview_note": "Welcome screen · four-stop guided tour · v1.0.0",
+  "preview_note": "Welcome screen · four-stop guided tour · v1.0.1",
   "footer": "JAVASCRIPT / THREE.JS / CLOUDFLARE",
   "preview_mode": "contain"
 }
