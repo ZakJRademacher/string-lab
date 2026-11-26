@@ -1,5 +1,9 @@
 # String Lab
 
+![String Lab's welcome screen over a vibrating closed string](docs/images/string-lab-1.0.1.png)
+
+**Live:** <https://string-lab.zakjrademacher.workers.dev>
+
 An interactive, beginner-friendly explorer of string theory ideas, with five modules:
 
 - **The problem:** quantum fuzz (the very small), curved space (gravity) and a black hole where they clash
@@ -11,10 +15,6 @@ An interactive, beginner-friendly explorer of string theory ideas, with five mod
 Two modes: **Simple**, a guided tour with plain-English controls for newcomers, and
 **Advanced**, a full laboratory with an inspector, presets, live formulas, graphs and
 diagnostics. No accounts: saved setups stay in your own browser.
-
-**Live:** <https://string-lab.zakjrademacher.workers.dev>
-
-![String Lab's welcome screen over a vibrating closed string](docs/images/string-lab-1.0.1.png)
 
 ## Scope: who it's for and what it won't do
 
